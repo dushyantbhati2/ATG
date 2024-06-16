@@ -6,7 +6,7 @@
     },
     "provider": {
       "name": "aws",
-      "runtime": "python3.12",
+      "runtime": "python3.8",
       "environment": {
         "MAIL_USERNAME": "dushyant3291@gmail.com",
         "MAIL_PASSWORD": "hwovulwjdcwsgpzm"
@@ -178,10 +178,10 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/email/dev/1718464777837-2024-06-15T15:19:37.837Z/email.zip"
+                "S3Key": "serverless/email/dev/1718513901484-2024-06-16T04:58:21.484Z/email.zip"
               },
               "Handler": "wsgi_handler.handler",
-              "Runtime": "python3.12",
+              "Runtime": "python3.8",
               "FunctionName": "email-dev-api",
               "MemorySize": 1024,
               "Timeout": 6,
@@ -202,14 +202,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionv3XAdK1unrt99TYmheccGJguHXN077uTJccKySWkZD4": {
+          "ApiLambdaVersionOUWEF07RInWfU0j3HEzcYi2NVDWM5VbllDR38lJWPw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "NDnyoGzp4MFVRQW8vtuFEyM5V01hMPnJ6BiKW6HN/Zk="
+              "CodeSha256": "ySOSQ2kzerjmNFtjEPdeU7Z/ZStalR2cQCgIuo3dHTw="
             }
           },
           "ApiGatewayRestApi": {
@@ -224,7 +224,7 @@
               "Policy": ""
             }
           },
-          "ApiGatewayResourceProxyVar": {
+          "ApiGatewayResourceSendDashemail": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
@@ -233,22 +233,19 @@
                   "RootResourceId"
                 ]
               },
-              "PathPart": "{proxy+}",
+              "PathPart": "send-email",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
             }
           },
-          "ApiGatewayMethodAny": {
+          "ApiGatewayMethodSendDashemailPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
-              "HttpMethod": "ANY",
+              "HttpMethod": "POST",
               "RequestParameters": {},
               "ResourceId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
+                "Ref": "ApiGatewayResourceSendDashemail"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -288,53 +285,7 @@
               "ApiLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodProxyVarAny": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "HttpMethod": "ANY",
-              "RequestParameters": {},
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceProxyVar"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
-              "Integration": {
-                "IntegrationHttpMethod": "POST",
-                "Type": "AWS_PROXY",
-                "Uri": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":lambda:path/2015-03-31/functions/",
-                      {
-                        "Fn::GetAtt": [
-                          "ApiLambdaFunction",
-                          "Arn"
-                        ]
-                      },
-                      "/invocations"
-                    ]
-                  ]
-                }
-              },
-              "MethodResponses": []
-            },
-            "DependsOn": [
-              "ApiLambdaPermissionApiGateway"
-            ]
-          },
-          "ApiGatewayDeployment1718464773920": {
+          "ApiGatewayDeployment1718513895764": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -343,8 +294,7 @@
               "StageName": "dev"
             },
             "DependsOn": [
-              "ApiGatewayMethodAny",
-              "ApiGatewayMethodProxyVarAny"
+              "ApiGatewayMethodSendDashemailPost"
             ]
           },
           "ApiLambdaPermissionApiGateway": {
@@ -397,7 +347,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionv3XAdK1unrt99TYmheccGJguHXN077uTJccKySWkZD4"
+              "Ref": "ApiLambdaVersionOUWEF07RInWfU0j3HEzcYi2NVDWM5VbllDR38lJWPw"
             },
             "Export": {
               "Name": "sls-email-dev-ApiLambdaFunctionQualifiedArn"
@@ -532,15 +482,8 @@
         "events": [
           {
             "http": {
-              "path": "",
-              "method": "any",
-              "integration": "AWS_PROXY"
-            }
-          },
-          {
-            "http": {
-              "path": "{proxy+}",
-              "method": "any",
+              "path": "send-email",
+              "method": "post",
               "integration": "AWS_PROXY"
             }
           }
@@ -549,9 +492,9 @@
         "package": {},
         "memory": 1024,
         "timeout": 6,
-        "runtime": "python3.12",
+        "runtime": "python3.8",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionv3XAdK1unrt99TYmheccGJguHXN077uTJccKySWkZD4"
+        "versionLogicalId": "ApiLambdaVersionOUWEF07RInWfU0j3HEzcYi2NVDWM5VbllDR38lJWPw"
       }
     },
     "configValidationMode": "warn",
@@ -583,8 +526,8 @@
           "serverless_wsgi.py",
           ".serverless-wsgi"
         ],
-        "artifact": "C:\\Users\\Dushyant\\Desktop\\New folder (2)\\email\\.serverless\\email.zip",
-        "artifactDirectoryName": "serverless/email/dev/1718464777837-2024-06-15T15:19:37.837Z"
+        "artifact": "C:\\Users\\Dushyant\\Desktop\\intern\\ATG\\email\\.serverless\\email.zip",
+        "artifactDirectoryName": "serverless/email/dev/1718513901484-2024-06-16T04:58:21.484Z"
       }
     },
     "app": "mail",
@@ -592,10 +535,10 @@
     "org": "unknown31",
     "orgId": null,
     "layers": {},
-    "artifact": "C:\\Users\\Dushyant\\Desktop\\New folder (2)\\email\\.serverless\\email.zip"
+    "artifact": "C:\\Users\\Dushyant\\Desktop\\intern\\ATG\\email\\.serverless\\email.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/email/dev/1718464777837-2024-06-15T15:19:37.837Z",
+    "artifactDirectoryName": "serverless/email/dev/1718513901484-2024-06-16T04:58:21.484Z",
     "artifact": "email.zip"
   }
 }

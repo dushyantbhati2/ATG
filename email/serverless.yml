@@ -11,20 +11,18 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.8
   environment:
     MAIL_USERNAME: dushyant3291@gmail.com 
     MAIL_PASSWORD: hwovulwjdcwsgpzm
 functions:
   api:
-    handler: wsgi_handler.handler
+    handler: wsgi.handler
     events:
       - http:
-          path: /
-          method: ANY
-      - http:
-          path: /{proxy+}
-          method: ANY
+          path: send-email
+          method: post
+
 
 plugins:
   - serverless-wsgi
